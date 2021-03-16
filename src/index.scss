@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%; // 10px
+}
+
+body {
+  position: relative;
+
+  background: linear-gradient(#f00000, #f00000 47%, #222224 47%, #222224 53%, #f0f0f0 53%, #f0f0f0);
+  font-family: montserrat, sans-serif;
+
+  height: 100vh;
+}
+
+.background-circle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  height: 20rem;
+  width: 20rem;
+  border-radius: 50%;
+  border: 3rem solid #222224;
+  z-index: -1;
+  background-color: #f0f0f0;
+}
+
+// container for displayed pokemon cards
+.card-container {
+  display: flex;
+  justify-content: space-between;
+
+  max-width: 110rem;
+  margin: 32rem auto;
+}
+
+// individual pokemon card
+.pokemon-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 2rem 1rem;
+  width: 21rem;
+  height: 27rem;
+
+  // background: linear-gradient(#b3c33764, #b31d2671);
+  background-color: rgba(34, 34, 36, 0.85);
+  border: 2px solid rgb(0, 0, 0);
+  border-radius: 8px;
+
+  box-shadow: 5px 1rem 8px #1d1d1db9;
+
+  &__img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  &__name {
+    position: absolute;
+    bottom: 0;
+    padding: 1rem;
+    width: 100%;
+
+    background-color: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: white;
+  }
+}
