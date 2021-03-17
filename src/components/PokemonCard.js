@@ -1,20 +1,14 @@
 import { useEffect, useState } from 'react';
 
-const PokemonCard = ({ name, URL, handleClick, id, style, imgNumber, setLoad }) => {
-  // const [style, setStyle] = useState({});
-
-  // useEffect(() => {
-  //   setStyle({ transform: 'scale(1)' });
-  // }, []);
-
+const PokemonCard = ({ name, URL, handleClick, id }) => {
   return (
-    <div className="pokemon-card" onClick={(e) => handleClick(id)}>
-      <img
-        src={URL}
-        className="pokemon-card__img"
-        style={style}
-        onLoad={(e) => setLoad(imgNumber)}
-      />
+    <div
+      className="pokemon-card"
+      onClick={(e) => {
+        handleClick(id);
+      }}
+    >
+      <img src={URL} className="pokemon-card__img" />
       <p className="pokemon-card__name">{name}</p>
     </div>
   );

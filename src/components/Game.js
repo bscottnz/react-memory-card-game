@@ -8,16 +8,15 @@ const Game = ({ incrementScore, resetScore }) => {
   // the pokemon that have been selected
   const [selectedPokemon, setSelectedPokemon] = useState([]);
 
-  // show iamges after they have loaded
-  const [didLoad, setDidLoad] = useState(false);
-  // const [didImgLoad, setDidImgLoad] = useState([false, false, false, false]);
-
-  // sometimes the onload doesnt fire and the images never display. will fix later
-  const [didImgLoad, setDidImgLoad] = useState([true, true, true, true]);
+  const [style, setStyle] = useState({ visibility: 'hidden' });
 
   // create image url for given pokemon id (array index + 1)
   const generateImageURL = (id) => {
     return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`;
+  };
+
+  const sleep = (milliseconds) => {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
   };
 
   // generate array of pokemon to display
@@ -29,30 +28,21 @@ const Game = ({ incrementScore, resetScore }) => {
 
     const score = selectedPokemon.length;
 
-    // generate 4 unique random numbers between 0 and 150 and append to randomNumbers
-    while (randomNumbers.length < 4) {
-      const randomPokemonIndex = Math.floor(Math.random() * 151);
-
-      if (!randomNumbers.includes(randomPokemonIndex)) {
-        randomNumbers.push(randomPokemonIndex);
-      }
-    }
-
     // reshow selected pokemon until they are 3 out of 4 options
     // pokemon id is 1 more than its index
     if (score === 1) {
-      randomNumbers[0] = selectedPokemon[0] - 1;
+      randomNumbers[0] = selectedPokemon[0];
     }
 
     if (score === 2) {
-      randomNumbers[1] = selectedPokemon[1] - 1;
-      randomNumbers[0] = selectedPokemon[0] - 1;
+      randomNumbers[1] = selectedPokemon[1];
+      randomNumbers[0] = selectedPokemon[0];
     }
 
     if (score === 3) {
-      randomNumbers[1] = selectedPokemon[1] - 1;
-      randomNumbers[2] = selectedPokemon[2] - 1;
-      randomNumbers[0] = selectedPokemon[0] - 1;
+      randomNumbers[1] = selectedPokemon[1];
+      randomNumbers[2] = selectedPokemon[2];
+      randomNumbers[0] = selectedPokemon[0];
     }
 
     // show 3 random previously selected pokemon
@@ -68,14 +58,22 @@ const Game = ({ incrementScore, resetScore }) => {
         }
       }
 
-      randomNumbers[1] = selectedPokemon[pokemonToReshow[1]] - 1;
-      randomNumbers[2] = selectedPokemon[pokemonToReshow[2]] - 1;
-      randomNumbers[0] = selectedPokemon[pokemonToReshow[0]] - 1;
+      randomNumbers[1] = selectedPokemon[pokemonToReshow[1]];
+      randomNumbers[2] = selectedPokemon[pokemonToReshow[2]];
+      randomNumbers[0] = selectedPokemon[pokemonToReshow[0]];
+    }
 
-      // console.log(randomNumbers[1]);
-      // console.log(randomNumbers[2]);
-      // console.log(randomNumbers[0]);
-      // console.log(selectedPokemon);
+    // generate 4 unique random numbers between 0 and 150 and append to randomNumbers on first load,
+    // then only generate enough random nunmbers to fill array
+
+    // i had this while loop at the top originally, before the if statements and sometimes
+    // i would get duplicate pokemon.
+    while (randomNumbers.length < 4) {
+      const randomPokemonIndex = Math.floor(Math.random() * 151);
+
+      if (!randomNumbers.includes(randomPokemonIndex)) {
+        randomNumbers.push(randomPokemonIndex);
+      }
     }
 
     function shuffleArray(array) {
@@ -92,35 +90,49 @@ const Game = ({ incrementScore, resetScore }) => {
       const pokemonData = {
         name: pokemon[num],
         imageURL: generateImageURL(num + 1),
-        id: num + 1,
+        id: num,
       };
 
       toDisplay.push(pokemonData);
     });
-
-    setCurrentPokemon(toDisplay);
     // console.log(toDisplay);
+    setCurrentPokemon(toDisplay);
+    // console.log(currentPokemon);
   };
 
+  // useEffect(() => {
+  //   setStyle({});
+  // });
+
   useEffect(() => {
     generatePokemonToDisplay();
+    sleep(1000).then(() => {
+      setStyle({});
+    });
   }, []);
 
+  // testing rare duplicate pokemon bug
+  // useEffect(() => {
+  //   console.log(currentPokemon);
+  //   console.log(selectedPokemon);
+  // }, [currentPokemon]);
+
   useEffect(() => {
-    // console.log(selectedPokemon);
     // reset display
 
-    generatePokemonToDisplay();
+    // hide pokemon after every reload
+    setStyle({ visibility: 'hidden' });
+
+    // make sure the hidden visibility is applied before the pokemon to display updates
+    sleep(200).then(() => {
+      generatePokemonToDisplay();
+    });
+
+    // after .7s, show the pokemon again
+    sleep(700).then(() => {
+      setStyle({});
+    });
   }, [selectedPokemon]);
-
-  useEffect(() => {
-    // console.log(selectedPokemon);
-    // reset display
-    // console.log(didImgLoad);
-    if (didImgLoad.every(Boolean)) {
-      setDidLoad(true);
-    }
-  }, [didImgLoad]);
 
   const handleClick = (id) => {
     // only add selected pokemon if it has not been previously selected
@@ -133,61 +145,34 @@ const Game = ({ incrementScore, resetScore }) => {
       resetScore();
       setSelectedPokemon([]);
     }
-
-    // setDidLoad(false);
-    // setDidImgLoad([false, false, false, false]);
-  };
-
-  const setLoad = (imgNumber) => {
-    setDidImgLoad((prevState) => {
-      const newState = [...prevState];
-      newState[imgNumber] = true;
-      return newState;
-    });
   };
 
   return (
     currentPokemon.length > 0 && (
-      <div className={'card-container'}>
-        {/* <img src={currentPokemon[0].imageURL} onClick={generatePokemonToDisplay} />
-        <img src={currentPokemon[1].imageURL} onClick={generatePokemonToDisplay} />
-        <img src={currentPokemon[2].imageURL} onClick={generatePokemonToDisplay} />
-        <img src={currentPokemon[3].imageURL} onClick={generatePokemonToDisplay} /> */}
+      <div className={'card-container'} style={style}>
         <PokemonCard
           URL={currentPokemon[0].imageURL}
           id={currentPokemon[0].id}
           name={currentPokemon[0].name}
           handleClick={handleClick}
-          style={didLoad ? {} : { visibility: 'hidden' }}
-          imgNumber={0}
-          setLoad={setLoad}
         />
         <PokemonCard
           URL={currentPokemon[1].imageURL}
           id={currentPokemon[1].id}
           name={currentPokemon[1].name}
           handleClick={handleClick}
-          style={didLoad ? {} : { visibility: 'hidden' }}
-          imgNumber={1}
-          setLoad={setLoad}
         />
         <PokemonCard
           URL={currentPokemon[2].imageURL}
           id={currentPokemon[2].id}
           name={currentPokemon[2].name}
           handleClick={handleClick}
-          style={didLoad ? {} : { visibility: 'hidden' }}
-          imgNumber={2}
-          setLoad={setLoad}
         />
         <PokemonCard
           URL={currentPokemon[3].imageURL}
           id={currentPokemon[3].id}
           name={currentPokemon[3].name}
           handleClick={handleClick}
-          style={didLoad ? {} : { visibility: 'hidden' }}
-          imgNumber={3}
-          setLoad={setLoad}
         />
       </div>
     )
