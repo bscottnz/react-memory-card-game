@@ -32,13 +32,58 @@ body {
   background-color: #f0f0f0;
 }
 
+// wrapper around each section
+.content {
+  padding: 3rem;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// header
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-container {
+  width: 40rem;
+  & img {
+    width: 100%;
+  }
+}
+
+.sub-title {
+  font-size: 3.2rem;
+  font-weight: 600;
+  color: #f0f0f0;
+  -webkit-text-fill-color: #f0f0f0;
+  -webkit-text-stroke: 1px black;
+}
+
+.game-rules {
+  margin-top: 2rem;
+  color: #f0f0f0;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
 // container for displayed pokemon cards
 .card-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   justify-content: space-between;
 
-  max-width: 110rem;
-  margin: 32rem auto;
+  width: 110rem;
+  margin: 0 auto;
 }
 
 // individual pokemon card
@@ -59,6 +104,14 @@ body {
   border-radius: 8px;
 
   box-shadow: 5px 1rem 8px #1d1d1db9;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  // transform: scale(0.1);
+
+  &:hover {
+    transform: scale(1.1);
+  }
 
   &__img {
     max-width: 100%;
@@ -79,4 +132,15 @@ body {
     text-transform: uppercase;
     color: white;
   }
+}
+
+.score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 4rem;
+
+  color: #222224;
+  font-size: 3rem;
+  font-weight: 600;
 }
